@@ -13,7 +13,7 @@ COPY . .
 
 # install system dependencies
 RUN apt-get update \
-  && apt-get -y install gcc postgresql \
+  && apt-get -y install gcc postgresql netcat \
   && apt-get clean
 
 # install dependencies
@@ -25,6 +25,10 @@ RUN apt-get update \
 
 
 RUN pipenv sync --dev --system
+
+# copy entrypoint.sh
+COPY /app/entrypoint.sh /usr/src/app/entrypoint.sh
+RUN chmod +x /usr/src/app/entrypoint.sh
 
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
