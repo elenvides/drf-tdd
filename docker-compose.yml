@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
+    container_name: movie_web
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./app/:/usr/src/app/
@@ -14,8 +15,10 @@ services:
       - ./app/.env.dev
     depends_on:
       - movies-db
+
   movies-db:
     image: postgres:15
+    container_name: movie_db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
