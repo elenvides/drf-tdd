@@ -20,11 +20,11 @@ services:
     image: postgres:15
     container_name: movie_db
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - movies_postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=movies
       - POSTGRES_PASSWORD=movies
       - POSTGRES_DB=movies_dev
 
 volumes:
-  postgres_data:
+  movies_postgres_data:
