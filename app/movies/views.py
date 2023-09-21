@@ -1,4 +1,6 @@
 from django.http import Http404
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -13,6 +15,17 @@ class MovieList(APIView):
         serializer = MovieSerializer(movies, many=True)
         return Response(serializer.data)
 
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "title": openapi.Schema(type=openapi.TYPE_STRING),
+                "genre": openapi.Schema(type=openapi.TYPE_STRING),
+                "year": openapi.Schema(type=openapi.TYPE_STRING),
+            },
+        ),
+        responses={status.HTTP_201_CREATED: openapi.Response("response description", MovieSerializer)},
+    )
     def post(self, request, format=None):
         serializer = MovieSerializer(data=request.data)
         if serializer.is_valid():
@@ -32,6 +45,25 @@ class MovieDetail(APIView):
         movie = self.get_object(pk)
         serializer = MovieSerializer(movie)
         return Response(serializer.data)
+
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "title": openapi.Schema(type=openapi.TYPE_STRING),
+                "genre": openapi.Schema(type=openapi.TYPE_STRING),
+                "year": openapi.Schema(type=openapi.TYPE_STRING),
+            },
+        ),
+        responses={status.HTTP_200_OK: openapi.Response("response description", MovieSerializer)},
+    )
+    def put(self, request, pk, format=None):
+        movie = self.get_object(pk)
+        serializer = MovieSerializer(movie, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
         movie = self.get_object(pk)
